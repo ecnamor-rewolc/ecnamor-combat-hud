@@ -95,5 +95,9 @@ def create_hud_icon():
     resized_img.save(output_path, "PNG")
     print(f"Generated new glowing HUD icon with full frame and saved to: {output_path}")
 
+    root_icon_path = r"Source/icon.png"
+    resized_img.save(root_icon_path, "PNG")
+    print(f"Also saved to mod root: {root_icon_path}")
+
 if __name__ == "__main__":
     create_hud_icon()
