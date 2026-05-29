@@ -26,10 +26,12 @@ This mod requires the following libraries to be enabled:
 ---
 
 <details>
-<summary><b>Permissions, Licensing & Handoff (Click to expand)</b></summary>
+  <summary><b>Permissions, Licensing & Handoff (Click to expand)</b></summary>
 
-### Free to Use, Modify, and Adapt
-* **ANYONE IS WELCOME TO FORK, MODIFY, REDISTRIBUTE, OR REPUBLISH.** 
-* This repository is released under **The Unlicense** (Public Domain). You can use, modify, store, compile, or distribute the source code, assets, and binaries however and wherever you want.
-* Feel free to adapt this HUD or incorporate any parts of the code into your own projects!
+  ### NOT A FINAL RELEASE
+
+  ### TESTED ONLY ON STARSECTOR 0.98a-RC8
+
+  ### ANYONE IS WELCOME TO FORK, MODIFY, OR REPUBLISH. I will maintain it for some time, but please do not expect long-term support, bug fixes, or future versions.
 </details>
+
