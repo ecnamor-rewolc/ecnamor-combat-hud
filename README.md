@@ -7,7 +7,7 @@
 > - **TESTED ONLY ON STARSECTOR `0.98a-RC8`.** It may work on other versions, but I haven't verified.
 > - **ANYONE IS WELCOME TO FORK, MODIFY, OR REPUBLISH.** This project is public domain ([Unlicense](https://unlicense.org/)) — no conditions.
 
-A unified, customizable Starsector combat HUD enhancement suite.
+A unified, ~~customizable~~ Starsector combat HUD enhancement suite.
 
 ## Features
 * **EHP Ring & Directional Spikes**: Renders a clean circle around your flagship showing current EHP, with spikes indicating incoming damage direction for shield-only hits.
