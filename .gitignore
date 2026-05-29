@@ -1,0 +1,35 @@
+# Compiled class files
+Source/bin/
+Source-release/
+ecnamor_combat_hud/
+*.jar
+
+# Local configurations (contains absolute user paths)
+local.properties
+
+# Backup folders
+backups/
+Source-*-backup/
+ecnamor_*-backup/
+
+# Reference materials and documentation logs
+reference/
+CLAUDE.md
+INFO.md
+
+# Starsector log files
+starsector.log
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Release zips
+ecnamor_combat_hud-*.zip
+
+# Third-party tools and large archives
+tools/*.zip
+tools/*.exe
+tools/*.pdf
+

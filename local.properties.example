@@ -1,0 +1,5 @@
+# Local development configuration template.
+# Copy this file to 'local.properties' and edit the path to point to your Starsector directory.
+# Backslashes must be doubled on Windows (e.g., C:\\Program Files\\Starsector).
+
+starsector.dir=C:\\path\\to\\Starsector

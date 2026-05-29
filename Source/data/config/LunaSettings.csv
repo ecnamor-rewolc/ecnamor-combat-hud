@@ -1,0 +1,60 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+,,,,,,,,
+hud_main_header,Combat HUD,Header,Combat HUD,,,,,Damage Indicator
+hud_version_text,,Text,Combat HUD  v2.0.7 (1.0.15 Reference),,,,,Damage Indicator
+,,,,,,,,
+psi_dmg_header,Damage Indicator,Header,Damage Indicator,,,,,Damage Indicator
+psi_dmg_enabled,Enable,Boolean,true,,Incoming sheild damage spikes and a color-reactive EHP ring that respond to incoming fire in real time.,,,Damage Indicator
+psi_direction_enabled,Direction Marker,Boolean,true,,Draws a sleek movement direction arrow at the outer edge of the EHP ring. Helps track inertia and drift in combat.,,,Damage Indicator
+,,,,,,,,
+psi_appear_header,Appearance,Header,Appearance,,,,,Damage Indicator
+psi_color_preset,Color Preset,Radio,Vanilla Green,"Vanilla Green,Vanilla Blue,Custom",Vanilla Green and Vanilla Blue match the Starsector HUD palette. Custom activates the color picker below. Applies to both indicators.,,,Damage Indicator
+psi_color,Custom Color,Color,#46C8FF,,Active when Color Preset is set to Custom.,,,Damage Indicator
+psi_alpha,Opacity,Double,0.9,,Opacity of all indicators.,0.05,1.0,Damage Indicator
+psi_size_mult,Size Multiplier,Double,1.0,,Scale factor for ring and spike radius.,0.5,4.0,Damage Indicator
+psi_line_width,Line Thickness,Double,1.5,,Line thickness in pixels.,0.5,8.0,Damage Indicator
+,,,,,,,,
+psi_behavior_header,Behavior,Header,Behavior,,,,,Damage Indicator
+psi_show_without_hud,Show When HUD Hidden,Boolean,true,,Show indicators even when the HUD is hidden (observation mode).,,,Damage Indicator
+psi_overload_noise,Overload Blackout,Boolean,true,,"When overloaded: all HUD fades to screen static noise, audio is muffled via low-pass filter. Vanilla HUD is also hidden (the F11 toggle). Immersive but disorienting. Fleet map stays usable.",,,Damage Indicator
+psi_killfeed_mode,Killfeed Mode,Radio,Vanilla,"Vanilla,Cap 10 lines,Hidden","Controls the vanilla combat killfeed/message log (top-left area). 'Vanilla' = no changes. 'Cap 10 lines' = trim to 10 most recent. 'Hidden' = fully empty. Applies to all messages including Combat Chatter dialogue and pause lines.",,,Damage Indicator
+psi_hide_ff_indicators,Hide Off-screen Pointers,Boolean,true,,Hides the vanilla ship pointer triangles and class silhouettes shown at screen edges. WIP NOT WORKING.,,,Damage Indicator
+,,,,,,,,
+psi_ind_header,Ship Indicator,Header,Ship Indicator,,,,,Ship Indicator
+psi_ind_note,,Text,"Draws a simple ring or corner brackets around your ship. Its sole purpose is to visually distinguish your ship from all others in the heat of battle. No damage reaction or directional information. Legacy.",,,,,Ship Indicator
+psi_enabled,Enable,Boolean,false,,Draws a visible marker around your currently piloted ship.,,,Ship Indicator
+psi_style,Style,Radio,Ring,"Ring,Pulsing Ring,Corner Brackets,Pulsing Brackets","Ring / Pulsing Ring: circle outline (static or animated). Corner Brackets / Pulsing Brackets: L-shaped marks aligned to ship facing.",,,Ship Indicator
+,,,,,,,,
+arcs_header,Thick Weapon Arcs,Header,Thick Weapon Arcs,,,,,Weapon Arcs
+arcs_enabled,Enable,Boolean,true,,Draws a thicker overlay version of weapon firing arcs.,,,Weapon Arcs
+,,,,,,,,
+arcs_appear_header,Appearance,Header,Appearance,,,,,Weapon Arcs
+arcs_color_preset,Color Preset,Radio,Vanilla Yellow,"Vanilla Green,Vanilla Blue,Vanilla Yellow,Custom",Vanilla presets match the Starsector HUD palette. Custom activates the color picker below.,,,Weapon Arcs
+arcs_color,Custom Color,Color,#FFDC46,,Active when Color Preset is set to Custom.,,,Weapon Arcs
+arcs_line_width,Line Thickness,Double,1.0,,Line thickness in pixels.,0.5,8.0,Weapon Arcs
+arcs_arc_alpha,Arc Opacity,Double,0.45,,Opacity of arc edge and curve lines.,0.05,1.0,Weapon Arcs
+arcs_facing_alpha,Facing Line Opacity,Double,0.55,,Opacity of the current weapon facing line.,0.05,1.0,Weapon Arcs
+,,,,,,,,
+arcs_input_header,Input,Header,Input,,,,,Weapon Arcs
+arcs_trigger_mode,Trigger Mode,Radio,Toggle,"Hold,Toggle","Hold = show while key pressed. Toggle = press once to turn on/off. Press the keybind below to toggle.",,,Weapon Arcs
+arcs_hold_key,Trigger Keybind,Keycode,48,,"Press this button in the LunaLib settings menu, then press the key you want to use. Default = B (48). Set to 0 to disable keybind.",,,Weapon Arcs
+,,,,,,,,
+arcs_features_header,Features,Header,Features,,,,,Weapon Arcs
+arcs_show_ticks,Range Ticks,Boolean,true,,Show small tick marks at regular distance intervals along each arc to help gauge weapon range.,,,Weapon Arcs
+arcs_tick_step,Tick Interval,Double,250,,Distance between range ticks (su).,50,2000,Weapon Arcs
+arcs_show_damaged,Damaged Weapon Glitch,Boolean,true,,"When half or more weapons in the selected group are disabled the arc lines turn orange and the overlay flickers with screen-tearing offsets. Hidden and decorative weapons are excluded from the count.",,,Weapon Arcs
+,,,,,,,,
+boundary_header,Battle Boundary,Header,Battle Boundary,,,,,Battle Boundary
+boundary_note,,Text,"Screen-edge bar and rotating ship pointer. The bar slides along the screen perimeter toward the player ship. The ship pointer appears near screen center (offset) only when the ship is off-screen and rotates to point at it.",,,,,Battle Boundary
+,,,,,,,,
+boundary_bar_header,Edge Bar,Header,Edge Bar,,,,,Battle Boundary
+boundary_bar_color_preset,Color Preset,Radio,Vanilla Blue,"Vanilla Green,Vanilla Blue,Vanilla Yellow,Custom",Vanilla presets match the Starsector HUD palette. Custom activates the color picker below.,,,Battle Boundary
+boundary_bar_color,Custom Color,Color,#46C8FF,,Active when Color Preset is set to Custom.,,,Battle Boundary
+boundary_bar_alpha,Opacity,Double,1.0,,Opacity of the screen-edge indicator bar.,0.05,1.0,Battle Boundary
+,,,,,,,,
+boundary_marker_header,Ship Pointer,Header,Ship Pointer,,,,,Battle Boundary
+boundary_marker_color_preset,Color Preset,Radio,Vanilla Blue,"Vanilla Green,Vanilla Blue,Vanilla Yellow,Custom",Vanilla presets match the Starsector HUD palette. Custom activates the color picker below.,,,Battle Boundary
+boundary_marker_color,Custom Color,Color,#46C8FF,,Active when Color Preset is set to Custom.,,,Battle Boundary
+boundary_marker_alpha,Opacity,Double,0.85,,Opacity of the rotating ship pointer.,0.05,1.0,Battle Boundary
+,,,,,,,,
+fx_header,Developer Options,Header,Developer Options,,,,,Developer Options

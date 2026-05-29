@@ -1,0 +1,8 @@
+{
+    "plugins": {
+        "ecnamor_hud_indicator":   "ecnamor.hud.psi.IndicatorCombatPlugin",
+        "ecnamor_hud_dmg_marker":  "ecnamor.hud.psi.DamageMarkerCombatPlugin",
+        "ecnamor_hud_boundary":    "ecnamor.hud.boundary.BoundaryCombatPlugin",
+        "ecnamor_hud_arcs":        "ecnamor.hud.arcs.ThickArcsCombatPlugin"
+    }
+}
