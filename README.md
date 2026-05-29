@@ -1,5 +1,12 @@
 # Combat HUD
 
+> [!WARNING]
+> ### STATUS & DISCLAIMER — READ BEFORE INSTALLING
+>
+> - **NOT A FINAL RELEASE.** This is a personal mod I'm publishing so other people can use it. I will maintain it for some time, but please do not expect long-term support, bug fixes, or future versions.
+> - **TESTED ONLY ON STARSECTOR `0.98a-RC8`.** It may work on other versions, but I haven't verified.
+> - **ANYONE IS WELCOME TO FORK, MODIFY, OR REPUBLISH** under the terms of the included license.
+
 A unified, customizable Starsector combat HUD enhancement suite.
 
 ## Features
@@ -23,15 +30,5 @@ This mod requires the following libraries to be enabled:
 * **LunaLib** (by Lukas22041) — [GitHub Repository](https://github.com/Lukas22041/LunaLib)
 * **MagicLib** (by MagicLibStarsector) — [GitHub Repository](https://github.com/MagicLibStarsector/MagicLib)
 
----
 
-<details>
-  <summary><b>Permissions, Licensing & Handoff (Click to expand)</b></summary>
-
-  ### NOT A FINAL RELEASE
-
-  ### TESTED ONLY ON STARSECTOR 0.98a-RC8
-
-  ### ANYONE IS WELCOME TO FORK, MODIFY, OR REPUBLISH. I will maintain it for some time, but please do not expect long-term support, bug fixes, or future versions.
-</details>
 
