@@ -15,7 +15,7 @@ A unified, ~~customizable~~ Starsector combat HUD enhancement suite.
 * **Offscreen Flagship Pointer**: A rotating semi-arc indicator at the screen center with a chevron pointer that directs you toward your flagship when it leaves the screen.
 * **Thick Weapon Firing Arcs**: Replaces thin default arcs with thicker, customizable indicators that flicker when weapon slots are disabled.
 * **Vanilla HUD Autohide & SFX Lowpass**: Temporarily hides vanilla UI panels during ship overload and applies a sound low-pass filter to emphasize the silence.
-* **Killfeed Cap**: Caps the maximum lines in the combat feed (TOP LEFT) to prevent UI clutter.
+* **Combat Log Cap**: Caps the maximum lines in the combat feed (TOP LEFT) to prevent UI clutter.
 
 Most features are individually toggleable and tunable via **LunaLib** settings.
 
