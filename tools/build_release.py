@@ -280,6 +280,17 @@ def main():
                 
     # 8. Copy release mod directory to active game mods folder for verification
     target_game_mod_dir = os.path.join(game_mods_dir, f"ecnamor_combat_hud-{version}-release")
+    
+    # Clean up ALL other ecnamor_combat_hud-* folders in game_mods_dir to avoid duplicates/conflicts!
+    print("Cleaning up old mod deployments in game mods folder...")
+    if os.path.exists(game_mods_dir):
+        for name in os.listdir(game_mods_dir):
+            if name.startswith("ecnamor_combat_hud-") and name != f"ecnamor_combat_hud-{version}-release":
+                dir_to_remove = os.path.join(game_mods_dir, name)
+                if os.path.isdir(dir_to_remove):
+                    print(f"  Removing: {dir_to_remove}")
+                    shutil.rmtree(dir_to_remove)
+
     if os.path.exists(target_game_mod_dir):
         shutil.rmtree(target_game_mod_dir)
     print(f"Deploying release copy to game mods: {target_game_mod_dir}...")
