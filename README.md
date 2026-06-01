@@ -19,6 +19,7 @@ Starsector Combat HUD enhancement.
 * **Killfeed Cap**: Caps the maximum lines in the combat feed (TOP LEFT) to prevent UI clutter.
 
 Most features are individually toggleable and|or tunable via **LunaLib** settings.
+*Should work properly with Virtual Super Resolution + UI Scaling.
 
 ## Installation
 1. Download the latest release from the Releases page.
