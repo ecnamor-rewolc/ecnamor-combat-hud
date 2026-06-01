@@ -62,7 +62,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
     private static final String MOD_ID = "ecnamor_combat_hud";
 
     // ── Timing ────────────────────────────────────────────────────────────────
-    private static final int   N_BUCKETS       = 90;
+    private static final int   N_BUCKETS       = 720;
     private static final float DECAY_HALF      = 1.4f;
     private static final float SMOOTH_UP_TAU   = 0.25f;
     private static final float SMOOTH_DOWN_TAU = 0.35f;
@@ -144,7 +144,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
     private boolean wasOverloaded       = false;
     private float   overloadStartTime   = 0f;
     private float   overloadNoiseAlpha  = 0f;
-    private boolean overloadNoiseEnabled= false;
+    private boolean overloadNoiseEnabled= true;
 
     // Death effect
     private float   deathNoiseAlpha     = 0f;
@@ -420,8 +420,15 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
                 if (r.shieldHit) {
                     rawBuckets[idx] += r.weight;
                 } else {
-                    rawCircleBuckets[idx] += r.weight;
-                    if (rawCircleBuckets[idx] > newCRaw) newCRaw = rawCircleBuckets[idx];
+                    int spread = 24;
+                    for (int i = -spread; i <= spread; i++) {
+                        float distFrac = 1.0f - Math.abs(i) / (float) spread;
+                        int targetIdx = clampIdx(idx + i);
+                        rawCircleBuckets[targetIdx] += r.weight * distFrac;
+                        if (rawCircleBuckets[targetIdx] > newCRaw) {
+                            newCRaw = rawCircleBuckets[targetIdx];
+                        }
+                    }
                 }
             }
 
@@ -449,7 +456,21 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
                     ? MathUtils.clamp(flux.getCurrFlux() / Math.max(1f, flux.getMaxFlux()), 0f, 1f)
                     : (isOverloaded ? 1f : 0f);
 
-            renderEffSpikeRef    = Math.max(1f, spikeRef * (1f - fluxFrac * FLUX_SENSITIVITY_MAX));
+            float currentESP = 1000f;
+            if (flux != null) {
+                float maxFlux = Math.max(1f, flux.getMaxFlux());
+                float currFlux = flux.getCurrFlux();
+                float remainingFlux = Math.max(0.10f * maxFlux, maxFlux - currFlux);
+                float efficiency = 1.0f;
+                ShieldAPI sh = ship.getShield();
+                if (sh != null && sh.getType() != ShieldAPI.ShieldType.NONE) {
+                    efficiency = Math.max(0.1f, sh.getFluxPerPointOfDamage());
+                }
+                currentESP = remainingFlux / efficiency;
+                float capEHP = Math.max(1f, ship.getMaxHitpoints()) * 6f;
+                currentESP = Math.min(currentESP, capEHP);
+            }
+            renderEffSpikeRef = Math.max(1f, currentESP * SPIKE_EHP_FRAC);
             renderSpikePulseMult = 1f;
             if (!isOverloaded && fluxFrac >= FLUX_SPIKE_T) {
                 float urgency = (fluxFrac - FLUX_SPIKE_T) / (1f - FLUX_SPIKE_T);
@@ -807,6 +828,22 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
     private void drawSpikes(Vector2f c, float r, float a,
                             float screenW, float screenH, float shipSX, float shipSY) {
         if (hitRecords.isEmpty()) return;
+
+        // Pre-compute active fighter spike angles for suppression of overlapping red spikes
+        List<Float> activeFighterAngles = new ArrayList<Float>();
+        for (HitRecord hr : hitRecords) {
+            if (hr.fighterMissile && hr.shieldHit) {
+                float fdx = hr.fallback.x - c.x, fdy = hr.fallback.y - c.y;
+                if (fdx == 0f && fdy == 0f) continue;
+                float centralDeg = (float) Math.toDegrees(Math.atan2(fdy, fdx));
+                if (centralDeg < 0f) centralDeg += 360f;
+                float weight = MathUtils.clamp(hr.weight / renderEffSpikeRef, 0f, 1f);
+                if (weight >= SPIKE_MIN_FRAC) {
+                    activeFighterAngles.add(centralDeg);
+                }
+            }
+        }
+
         GL11.glLineWidth(Math.max(1.5f, lineWidth * 0.80f));
         for (HitRecord hr : hitRecords) {
             // Process shield hits (red) and fighter missile shield hits (orange)
@@ -835,6 +872,19 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
                 if (fdx == 0f && fdy == 0f) continue;
                 centralDeg = (float) Math.toDegrees(Math.atan2(fdy, fdx));
                 if (centralDeg < 0f) centralDeg += 360f;
+
+                // Check suppression by nearby active fighter spikes
+                boolean suppressed = false;
+                for (float fAngle : activeFighterAngles) {
+                    float diff = Math.abs(centralDeg - fAngle) % 360f;
+                    if (diff > 180f) diff = 360f - diff;
+                    if (diff <= 10f) {
+                        suppressed = true;
+                        break;
+                    }
+                }
+                if (suppressed) continue;
+
                 weight = MathUtils.clamp(smoothedAt(centralDeg, smoothBuckets) / renderEffSpikeRef, 0f, 1f);
                 if (weight < SPIKE_MIN_FRAC) continue;
                 spikeColor = RED;
@@ -844,8 +894,8 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
             float maxLen = shaped * SPIKE_MAX_LEN * renderSpikePulseMult;
 
             GL11.glBegin(GL11.GL_LINES);
-            for (int s = -2; s <= 2; s++) {
-                float lenFrac  = (s == 0) ? 1.00f : (Math.abs(s) == 1 ? 0.50f : 0.25f);
+            for (int s = -5; s <= 5; s++) {
+                float lenFrac  = 1.00f - Math.abs(s) * 0.20f;
                 float spikeLen = maxLen * lenFrac;
                 if (spikeLen < 0.5f) continue;
 

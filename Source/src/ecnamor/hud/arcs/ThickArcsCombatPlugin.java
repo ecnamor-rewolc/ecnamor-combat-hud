@@ -71,6 +71,10 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
     private float           time       = 0f;
     private final Random    glitchRng  = new Random();
 
+    private boolean hasAutoToggled = false;
+    private com.fs.starfarer.api.combat.WeaponGroupAPI lastSelectedGroup = null;
+    private ShipAPI lastTrackedShip = null;
+
     // Settings (defaults match LunaSettings.csv).
     private boolean enabled     = true;
     private Color   color       = VANILLA_YELLOW;
@@ -97,6 +101,9 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
         this.engine     = engine;
         this.time       = 0f;
         this.wasKeyDown = false;
+        this.hasAutoToggled = false;
+        this.lastSelectedGroup = null;
+        this.lastTrackedShip = null;
         loadSettings();
         restoreToggleState();
     }
@@ -195,6 +202,45 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
     }
 
     @Override
+    public void processInputPreCoreControls(float amount, List<InputEventAPI> events) {
+        if (!enabled || engine == null || hasAutoToggled) return;
+        if (engine.isUIShowingDialog()) return;
+
+        ShipAPI player = engine.getPlayerShip();
+        if (player == null || !player.isAlive() || player.isHulk()) return;
+
+        if (shouldShow()) {
+            hasAutoToggled = true;
+            try {
+                InputEventAPI event = (InputEventAPI) java.lang.reflect.Proxy.newProxyInstance(
+                    InputEventAPI.class.getClassLoader(),
+                    new Class<?>[] { InputEventAPI.class },
+                    new java.lang.reflect.InvocationHandler() {
+                        @Override
+                        public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
+                            String name = method.getName();
+                            if ("isConsumed".equals(name)) return Boolean.FALSE;
+                            if ("isKeyDownEvent".equals(name)) return Boolean.TRUE;
+                            if ("isKeyUpEvent".equals(name)) return Boolean.FALSE;
+                            if ("isKeyboardEvent".equals(name)) return Boolean.TRUE;
+                            if ("isMouseEvent".equals(name)) return Boolean.FALSE;
+                            if ("getEventClass".equals(name)) return com.fs.starfarer.api.input.InputEventClass.KEYBOARD_EVENT;
+                            if ("getEventType".equals(name)) return com.fs.starfarer.api.input.InputEventType.KEY_DOWN;
+                            if ("getEventValue".equals(name)) return 41; // Keyboard.KEY_GRAVE
+                            if ("getEventChar".equals(name)) return '`';
+                            if (method.getReturnType() == boolean.class) return Boolean.FALSE;
+                            if (method.getReturnType() == int.class) return 0;
+                            if (method.getReturnType() == float.class) return 0f;
+                            return null;
+                        }
+                    }
+                );
+                events.add(event);
+            } catch (Throwable ignored) {}
+        }
+    }
+
+    @Override
     public void advance(float amount, List<InputEventAPI> events) {
         if (!enabled || engine == null) return;
         if (engine.isUIShowingDialog()) return;
@@ -211,10 +257,21 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
         // Hide when on autopilot
         if (player.getShipAI() != null) return;
 
-        // Only draw arcs for the currently selected weapon group.
-        // If no group is selected, hide the overlay entirely.
-        if (player.getSelectedGroupAPI() == null) return;
-        List<WeaponAPI> weapons = player.getSelectedGroupAPI().getWeaponsCopy();
+        // Caching and fallback logic for weapon groups
+        if (player != lastTrackedShip) {
+            lastTrackedShip = player;
+            lastSelectedGroup = null;
+        }
+
+        com.fs.starfarer.api.combat.WeaponGroupAPI activeGroup = player.getSelectedGroupAPI();
+        if (activeGroup != null) {
+            lastSelectedGroup = activeGroup;
+        }
+
+        com.fs.starfarer.api.combat.WeaponGroupAPI groupToDraw = (activeGroup != null) ? activeGroup : lastSelectedGroup;
+        if (groupToDraw == null) return;
+
+        List<WeaponAPI> weapons = groupToDraw.getWeaponsCopy();
         if (weapons == null || weapons.isEmpty()) return;
 
         // Per-weapon glitch: compute flicker once, apply per-weapon if disabled.
