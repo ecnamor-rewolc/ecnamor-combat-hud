@@ -5,7 +5,6 @@
 >
 > - **NOT A FINAL RELEASE.** This is a personal mod I'm publishing so other people can use it. I will maintain it for some time, but please do not expect long-term support, bug fixes, or future versions.
 > - **TESTED ONLY ON STARSECTOR `0.98a-RC8`.** It may work on other versions, but I haven't verified.
-> - **HAVE SOME MINOR ISSUES WITH DSR + UI SCALING IN BOUNDARY PLUGIN**
 > - **ANYONE IS WELCOME TO FORK, MODIFY, OR REPUBLISH.** This project is public domain ([Unlicense](https://unlicense.org/)) — no conditions applied.
 > - ~~**GOD HAD NO HAND IN THE CREATION OF THIS ABHORRENCE**~~
 
