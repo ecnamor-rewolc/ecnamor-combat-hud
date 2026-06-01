@@ -526,8 +526,9 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         if (tracked == null) return;
         viewport = engine.getViewport();
         Vector2f loc     = tracked.getLocation();
-        float    screenW = Global.getSettings().getScreenWidthPixels();
-        float    screenH = Global.getSettings().getScreenHeightPixels();
+        float    uiscale = Math.max(1f, Global.getSettings().getScreenScaleMult());
+        float    screenW = Global.getSettings().getScreenWidthPixels() / uiscale;
+        float    screenH = Global.getSettings().getScreenHeightPixels() / uiscale;
         float    shipSX  = viewport.convertWorldXtoScreenX(loc.x);
         float    shipSY  = viewport.convertWorldYtoScreenY(loc.y);
 
@@ -556,7 +557,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
                             if      (hf >= 0.50f) arrowColor = lerpColor(YELLOW, baseColor, (hf - 0.50f) / 0.50f);
                             else if (hf >= 0.25f) arrowColor = lerpColor(ORANGE, YELLOW,    (hf - 0.25f) / 0.25f);
                             else                  arrowColor = lerpColor(RED,    ORANGE,     hf           / 0.25f);
-                            drawDirectionArrow(circleCenter, renderBaseR, arrowAlpha, lineWidth, arrowColor, moveDeg);
+                            drawDirectionArrow(circleCenter, renderBaseR, arrowAlpha, lineWidth, arrowColor, moveDeg, screenW, screenH);
                         }
                     }
                 }
@@ -580,8 +581,9 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         boolean drawDeath    = deathNoiseAlpha    > 0.01f;
         if (!drawOverload && !drawDeath) return;
 
-        float sw = Global.getSettings().getScreenWidthPixels();
-        float sh = Global.getSettings().getScreenHeightPixels();
+        float uiscale = Math.max(1f, Global.getSettings().getScreenScaleMult());
+        float sw = Global.getSettings().getScreenWidthPixels() / uiscale;
+        float sh = Global.getSettings().getScreenHeightPixels() / uiscale;
         screenGLBegin(sw, sh);
         if (drawOverload) drawOverloadNoise(sw, sh);
         if (drawDeath)    drawDeathNoise(sw, sh);
@@ -726,12 +728,17 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         return center;
     }
 
-    private void drawDirectionArrow(Vector2f c, float r, float a, float lw, Color color, float moveDeg) {
+    private void drawDirectionArrow(Vector2f c, float r, float a, float lw, Color color, float moveDeg, float screenW, float screenH) {
         double rad = Math.toRadians(moveDeg);
         float cos = (float) Math.cos(rad);
         float sin = (float) Math.sin(rad);
         float tx = c.x + (r + 32f) * cos;
         float ty = c.y + (r + 32f) * sin;
+
+        float fade = elementFade(tx, ty, screenW, screenH);
+        float finalAlpha = a * fade;
+        if (finalAlpha <= 0.005f) return;
+
         float d_parallel = 20f;
         float d_perpendicular = 16f;
         float lx = tx - d_parallel * cos - d_perpendicular * sin;
@@ -740,7 +747,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         float ry = ty - d_parallel * sin - d_perpendicular * cos;
         GL11.glLineWidth(lw);
         GL11.glBegin(GL11.GL_LINE_STRIP);
-        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, a);
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, finalAlpha);
         GL11.glVertex2f(lx, ly);
         GL11.glVertex2f(tx, ty);
         GL11.glVertex2f(rx, ry);

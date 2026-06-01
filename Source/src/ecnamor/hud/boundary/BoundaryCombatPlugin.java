@@ -143,8 +143,9 @@ public class BoundaryCombatPlugin extends BaseEveryFrameCombatPlugin {
         ShipAPI player = engine.getPlayerShip();
         if (player == null || !player.isAlive() || player.isHulk()) return;
 
-        float sw = Global.getSettings().getScreenWidthPixels();
-        float sh = Global.getSettings().getScreenHeightPixels();
+        float uiscale = Math.max(1f, Global.getSettings().getScreenScaleMult());
+        float sw = Global.getSettings().getScreenWidthPixels() / uiscale;
+        float sh = Global.getSettings().getScreenHeightPixels() / uiscale;
 
         Vector2f loc = player.getLocation();
         float sx = viewport.convertWorldXtoScreenX(loc.x);

@@ -1,7 +1,7 @@
 fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
 ,,,,,,,,
 hud_main_header,Combat HUD,Header,Combat HUD,,,,,Damage Indicator
-hud_version_text,,Text,Combat HUD  v2.0.7 (1.0.15 Reference),,,,,Damage Indicator
+hud_version_text,,Text,Combat HUD  v2.0.8 (1.0.15 Reference),,,,,Damage Indicator
 ,,,,,,,,
 psi_dmg_header,Damage Indicator,Header,Damage Indicator,,,,,Damage Indicator
 psi_dmg_enabled,Enable,Boolean,true,,Incoming sheild damage spikes and a color-reactive EHP ring that respond to incoming fire in real time.,,,Damage Indicator

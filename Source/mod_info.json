@@ -2,8 +2,8 @@
     "id": "ecnamor_combat_hud",
     "name": "Combat HUD",
     "author": "ecnamor",
-    "version": "2.0.7",
-    "description": "Unified combat HUD enhancement suite. v2.0.7 (v1.0.15 was the last stable 1.x release). Includes: player ship indicator with damage-reactive ring and directional spikes, battle boundary marker with off-screen flagship pointer, thick weapon firing arc overlay, vanilla HUD hide on overload (with audio low-pass), and killfeed line cap. All features individually toggleable via LunaLib settings.",
+    "version": "2.0.8",
+    "description": "Unified combat HUD enhancement suite. v2.0.8 (v1.0.15 was the last stable 1.x release). Includes: player ship indicator with damage-reactive ring and directional spikes, battle boundary marker with off-screen flagship pointer, thick weapon firing arc overlay, vanilla HUD hide on overload (with audio low-pass), and killfeed line cap. All features individually toggleable via LunaLib settings.",
     "gameVersion": "0.98a-RC8",
     "utility": "true",
     "dependencies": [
