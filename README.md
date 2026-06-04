@@ -30,6 +30,6 @@ Should work properly with Virtual Super Resolution + UI Scaling.
 ## Dependencies
 This mod requires the following libraries to be enabled:
 * **LazyLib** (by LazyWizard) — [GitHub Repository](https://github.com/LazyWizard/lazylib)
-* **Alternative: LunaLib — Extended Search + Animated Icons** (my own fork) — [GitHub Repository](https://github.com/ecnamor-rewolc/LunaLib-Extended-Search)
 * **LunaLib** (by Lukas04) — [GitHub Repository](https://github.com/Lukas22041/LunaLib)
+* **Alternative: LunaLib — Extended Search + Animated Icons** (my own fork) — [GitHub Repository](https://github.com/ecnamor-rewolc/LunaLib-Extended-Search)
 * **MagicLib** — [GitHub Repository](https://github.com/MagicLibStarsector/MagicLib)
