@@ -83,7 +83,7 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
     private float   facingAlpha = 0.55f;
 
     private boolean toggleMode  = true;
-    private boolean toggleState = false;
+    private boolean toggleState = true;
     private boolean wasKeyDown  = false;
 
     private int holdKey    = DEFAULT_KEYCODE;
@@ -170,6 +170,7 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
 
     private void restoreToggleState() {
         try {
+            if (Global.getSector() == null) return;
             java.util.Map<String, Object> data = Global.getSector().getPersistentData();
             Object saved = data.get(PERSIST_TOGGLE_KEY);
             if (saved instanceof Boolean) toggleState = (Boolean) saved;
@@ -178,6 +179,7 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
 
     private void saveToggleState() {
         try {
+            if (Global.getSector() == null) return;
             Global.getSector().getPersistentData().put(PERSIST_TOGGLE_KEY, toggleState);
         } catch (Exception ignored) {}
     }
@@ -189,54 +191,70 @@ public class ThickArcsCombatPlugin extends BaseEveryFrameCombatPlugin {
         return false;
     }
 
-    private boolean shouldShow() {
-        if (holdKey <= 0) return true;
-        if (!toggleMode) return isKeyDown();
+    private void checkInput() {
+        if (holdKey <= 0) return;
+        if (!toggleMode) {
+            toggleState = isKeyDown();
+            return;
+        }
         boolean down = isKeyDown();
         if (down && !wasKeyDown) {
             toggleState = !toggleState;
             saveToggleState();
         }
         wasKeyDown = down;
+    }
+
+    private boolean shouldShow() {
         return toggleState;
     }
 
     @Override
     public void processInputPreCoreControls(float amount, List<InputEventAPI> events) {
-        if (!enabled || engine == null || hasAutoToggled) return;
+        if (!enabled || engine == null) return;
+
+        checkInput();
+
+        if (hasAutoToggled) return;
         if (engine.isUIShowingDialog()) return;
+        if (!engine.isSimulation() && !engine.isUIShowingHUD()) return;
+        if (time < 0.2f) return;
 
         ShipAPI player = engine.getPlayerShip();
         if (player == null || !player.isAlive() || player.isHulk()) return;
 
         if (shouldShow()) {
-            hasAutoToggled = true;
-            try {
-                InputEventAPI event = (InputEventAPI) java.lang.reflect.Proxy.newProxyInstance(
-                    InputEventAPI.class.getClassLoader(),
-                    new Class<?>[] { InputEventAPI.class },
-                    new java.lang.reflect.InvocationHandler() {
-                        @Override
-                        public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
-                            String name = method.getName();
-                            if ("isConsumed".equals(name)) return Boolean.FALSE;
-                            if ("isKeyDownEvent".equals(name)) return Boolean.TRUE;
-                            if ("isKeyUpEvent".equals(name)) return Boolean.FALSE;
-                            if ("isKeyboardEvent".equals(name)) return Boolean.TRUE;
-                            if ("isMouseEvent".equals(name)) return Boolean.FALSE;
-                            if ("getEventClass".equals(name)) return com.fs.starfarer.api.input.InputEventClass.KEYBOARD_EVENT;
-                            if ("getEventType".equals(name)) return com.fs.starfarer.api.input.InputEventType.KEY_DOWN;
-                            if ("getEventValue".equals(name)) return 41; // Keyboard.KEY_GRAVE
-                            if ("getEventChar".equals(name)) return '`';
-                            if (method.getReturnType() == boolean.class) return Boolean.FALSE;
-                            if (method.getReturnType() == int.class) return 0;
-                            if (method.getReturnType() == float.class) return 0f;
-                            return null;
+            if (engine.getCombatUI() != null && engine.getCombatUI().areWeaponArcsOn()) {
+                hasAutoToggled = true;
+                try {
+                    InputEventAPI event = (InputEventAPI) java.lang.reflect.Proxy.newProxyInstance(
+                        InputEventAPI.class.getClassLoader(),
+                        new Class<?>[] { InputEventAPI.class },
+                        new java.lang.reflect.InvocationHandler() {
+                            @Override
+                            public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
+                                String name = method.getName();
+                                if ("isConsumed".equals(name)) return Boolean.FALSE;
+                                if ("isKeyDownEvent".equals(name)) return Boolean.TRUE;
+                                if ("isKeyUpEvent".equals(name)) return Boolean.FALSE;
+                                if ("isKeyboardEvent".equals(name)) return Boolean.TRUE;
+                                if ("isMouseEvent".equals(name)) return Boolean.FALSE;
+                                if ("getEventClass".equals(name)) return com.fs.starfarer.api.input.InputEventClass.KEYBOARD_EVENT;
+                                if ("getEventType".equals(name)) return com.fs.starfarer.api.input.InputEventType.KEY_DOWN;
+                                if ("getEventValue".equals(name)) return 41; // Keyboard.KEY_GRAVE
+                                if ("getEventChar".equals(name)) return '`';
+                                if (method.getReturnType() == boolean.class) return Boolean.FALSE;
+                                if (method.getReturnType() == int.class) return 0;
+                                if (method.getReturnType() == float.class) return 0f;
+                                return null;
+                            }
                         }
-                    }
-                );
-                events.add(event);
-            } catch (Throwable ignored) {}
+                    );
+                    events.add(event);
+                } catch (Throwable ignored) {}
+            } else {
+                hasAutoToggled = true;
+            }
         }
     }
 
