@@ -145,6 +145,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
     private float   overloadStartTime   = 0f;
     private float   overloadNoiseAlpha  = 0f;
     private boolean overloadNoiseEnabled= true;
+    private boolean renderIsForcedOverload = false;
 
     // Death effect
     private float   deathNoiseAlpha     = 0f;
@@ -242,6 +243,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         renderCircleAlpha = 0f; renderEffSpikeRef = 1f;
         renderSpikePulseMult = 1f; renderBaseR = 100f;
         renderHullFrac = 1f; renderIsOverloaded = false;
+        renderIsForcedOverload = false;
         Arrays.fill(rawBuckets, 0f); Arrays.fill(smoothBuckets, 0f);
         Arrays.fill(rawCircleBuckets, 0f); Arrays.fill(smoothCircleBuckets, 0f);
         smoothCircleMax = 1f; spikeRef = 1f; circleRef = 1f;
@@ -452,6 +454,13 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
             // Flux & spike state
             FluxTrackerAPI flux = ship.getFluxTracker();
             boolean isOverloaded = flux != null && flux.isOverloaded();
+            boolean forced = false;
+            if (isOverloaded && flux != null) {
+                if (flux.getCurrFlux() < flux.getMaxFlux() * 0.98f) {
+                    forced = true;
+                }
+            }
+            renderIsForcedOverload = forced;
             float fluxFrac = (flux != null && !isOverloaded)
                     ? MathUtils.clamp(flux.getCurrFlux() / Math.max(1f, flux.getMaxFlux()), 0f, 1f)
                     : (isOverloaded ? 1f : 0f);
@@ -502,7 +511,9 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
             // Track edge for onset ripple + HUD hide toggle
             if (isOverloaded != wasOverloaded) {
                 if (isOverloaded) overloadStartTime = time;
-                if (overloadNoiseEnabled) hudControl.onOverloadEdge(engine, isOverloaded);
+                if (overloadNoiseEnabled && !forced) {
+                    hudControl.onOverloadEdge(engine, isOverloaded);
+                }
             }
             wasOverloaded      = isOverloaded;
             renderIsOverloaded = isOverloaded;
@@ -606,7 +617,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         float sw = Global.getSettings().getScreenWidthPixels() / uiscale;
         float sh = Global.getSettings().getScreenHeightPixels() / uiscale;
         screenGLBegin(sw, sh);
-        if (drawOverload) drawOverloadNoise(sw, sh);
+        if (drawOverload) drawOverloadNoise(sw, sh, renderIsForcedOverload);
         if (drawDeath)    drawDeathNoise(sw, sh);
         screenGLEnd();
     }
@@ -920,7 +931,7 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
 
 
     /** Screen-space CRT noise overlay during overload. */
-    private void drawOverloadNoise(float sw, float sh) {
+    private void drawOverloadNoise(float sw, float sh, boolean forced) {
         float a = overloadNoiseAlpha;
 
         // 1. Dark overlay — 70% black
@@ -929,6 +940,8 @@ public class DamageMarkerCombatPlugin extends BaseEveryFrameCombatPlugin {
         GL11.glVertex2f(0f, 0f); GL11.glVertex2f(sw, 0f);
         GL11.glVertex2f(sw, sh); GL11.glVertex2f(0f, sh);
         GL11.glEnd();
+
+        if (forced) return;
 
         // 2. Purple/violet horizontal bands — key overload hallmark
         float[] speeds = { sh / 2.5f, sh / 4.2f, sh / 1.8f, sh / 3.1f };
